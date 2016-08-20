@@ -1,5 +1,6 @@
 require_relative '../config/environment'
 
+
 describe "Assignment" do
 
     before :all do
@@ -8,8 +9,8 @@ describe "Assignment" do
 
     around :each do |example|
         if $continue
-            $continue = false 
-            example.run 
+            $continue = false
+            example.run
             $continue = true unless example.exception
         else
             example.skip
@@ -22,7 +23,7 @@ describe "Assignment" do
     end
 
     #helper method to determine if two files are the same
-    def files_same?(file1, file2) 
+    def files_same?(file1, file2)
       if (File.size(file1) != File.size(file2)) then
         return false
       end
@@ -40,7 +41,7 @@ describe "Assignment" do
         it "must have top level structure of a rails application" do
           expect(File.exists?("Gemfile")).to be(true)
           expect(Dir.entries(".")).to include("app", "bin", "config", "db", "lib", "public", "log", "test", "vendor")
-          expect(Dir.entries("./app")).to include("assets", "controllers", "helpers", "mailers", "models", "views")        
+          expect(Dir.entries("./app")).to include("assets", "controllers", "helpers", "mailers", "models", "views")
         end
       end
     end
@@ -49,17 +50,17 @@ describe "Assignment" do
       context "User Model:" do
         it "User class created" do
           expect(class_exists?("User"))
-          expect(User < ActiveRecord::Base).to eq(true)        
+          expect(User < ActiveRecord::Base).to eq(true)
         end
         context "User class properties added" do
           subject(:user) { User.new }
-          it { is_expected.to respond_to(:username) } 
-          it { is_expected.to respond_to(:password_digest) } 
-          it { is_expected.to respond_to(:created_at) } 
-          it { is_expected.to respond_to(:updated_at) } 
+          it { is_expected.to respond_to(:username) }
+          it { is_expected.to respond_to(:password_digest) }
+          it { is_expected.to respond_to(:created_at) }
+          it { is_expected.to respond_to(:updated_at) }
         end
         it "User database structure in place" do
-          # rails g model user username password_digest 
+          # rails g model user username password_digest
           # rake db:migrate
           expect(User.column_names).to include "password_digest", "username"
           expect(User.column_types["username"].type).to eq :string
@@ -78,16 +79,16 @@ describe "Assignment" do
         end
         context "Profile class properties added" do
           subject(:profile) { Profile.new }
-          it { is_expected.to respond_to(:gender) } 
-          it { is_expected.to respond_to(:birth_year) } 
-          it { is_expected.to respond_to(:first_name) } 
-          it { is_expected.to respond_to(:last_name) } 
-          it { is_expected.to respond_to(:user) } 
-          it { is_expected.to respond_to(:created_at) } 
-          it { is_expected.to respond_to(:updated_at) } 
+          it { is_expected.to respond_to(:gender) }
+          it { is_expected.to respond_to(:birth_year) }
+          it { is_expected.to respond_to(:first_name) }
+          it { is_expected.to respond_to(:last_name) }
+          it { is_expected.to respond_to(:user) }
+          it { is_expected.to respond_to(:created_at) }
+          it { is_expected.to respond_to(:updated_at) }
         end
         it "Profile database structure in place" do
-          # rails g model profile gender birth_year:integer first_name last_name 
+          # rails g model profile gender birth_year:integer first_name last_name
           # rake db:migrate
           expect(Profile.column_names).to include "gender", "birth_year", "first_name", "last_name"
           expect(Profile.column_types["gender"].type).to eq :string
@@ -115,10 +116,10 @@ describe "Assignment" do
       end
       context "TodoList class properties added" do
         subject(:todolist) { TodoList.new }
-        it { is_expected.to respond_to(:list_due_date) } 
-        it { is_expected.to respond_to(:list_name) } 
-        it { is_expected.to respond_to(:created_at) } 
-        it { is_expected.to respond_to(:updated_at) } 
+        it { is_expected.to respond_to(:list_due_date) }
+        it { is_expected.to respond_to(:list_name) }
+        it { is_expected.to respond_to(:created_at) }
+        it { is_expected.to respond_to(:updated_at) }
       end
       it "TodoList database structure in place" do
         # rails g model todo_list list_name list_due_date:date         s
@@ -149,43 +150,43 @@ describe "Assignment" do
       end
       context "TodoItem class properties added" do
         subject(:todoItem) { TodoItem.new }
-        it { is_expected.to respond_to(:due_date) } 
-        it { is_expected.to respond_to(:title) } 
+        it { is_expected.to respond_to(:due_date) }
+        it { is_expected.to respond_to(:title) }
         it { is_expected.to respond_to(:completed) }
-        it { is_expected.to respond_to(:description) } 
-        it { is_expected.to respond_to(:created_at) } 
-        it { is_expected.to respond_to(:updated_at) } 
+        it { is_expected.to respond_to(:description) }
+        it { is_expected.to respond_to(:created_at) }
+        it { is_expected.to respond_to(:updated_at) }
       end
       it "TodoItem database structure in place" do
-        # rails g model todo_item due_date:date title description:text         
+        # rails g model todo_item due_date:date title description:text
         # rake db:migrate
         expect(TodoItem.column_names).to include "due_date", "title", "description", "completed"
         expect(TodoItem.column_types["due_date"].type).to eq :date
         expect(TodoItem.column_types["title"].type).to eq :string
-        expect(TodoItem.column_types["description"].type).to eq :text            
+        expect(TodoItem.column_types["description"].type).to eq :text
         expect(TodoItem.column_types["created_at"].type).to eq :datetime
         expect(TodoItem.column_types["updated_at"].type).to eq :datetime
         expect(TodoItem.column_types["completed"].type).to eq :boolean
       end
       it "TodoItem has a many:1 belongs_to relationship with TodoList" do
         expect(TodoItem.reflect_on_association(:todo_list).macro).to eq :belongs_to
-      end         
+      end
       it "TodoList has a 1:many has_many relationship with TodoItem" do
         expect(TodoList.reflect_on_association(:todo_items).macro).to eq :has_many
-      end         
+      end
       it "TodoItem will be destroyed when TodoList deleted" do
          expect(TodoList.reflect_on_association(:todo_items).options[:dependent]).to eq :destroy
-      end         
+      end
     end
 
     context "rq08" do # Re-use and update 'TodoItem' model and database table
       it "User has a 1:many relationship with TodoItem" do
         expect(User.reflect_on_association(:todo_items).macro).to eq :has_many
-      end         
+      end
       it "User has a 1:many relationship with TodoItem through TodoList" do
-        expect(User.reflect_on_association(:todo_items).options[:through]).to eq :todo_lists  
-        expect(User.reflect_on_association(:todo_items).options[:source]).to eq :todo_items  
-      end         
+        expect(User.reflect_on_association(:todo_items).options[:through]).to eq :todo_lists
+        expect(User.reflect_on_association(:todo_items).options[:source]).to eq :todo_items
+      end
     end
 
     context "rq09" do
@@ -213,9 +214,9 @@ describe "Assignment" do
           expect(User.all.map{ |x| x.username }).to include("Trump", "Fiorina", "Carson", "Clinton")
         end
 
-        it "must have Profiles set up for each user with the given data" do 
+        it "must have Profiles set up for each user with the given data" do
           expect(Profile.all.length).to be(4)
-          user_list.each do | fname, lname, gender, byear | 
+          user_list.each do | fname, lname, gender, byear |
             p = Profile.find_by(last_name: lname)
             expect(p.first_name).to eql(fname)
             expect(p.gender).to eql(gender)
@@ -226,9 +227,10 @@ describe "Assignment" do
         it "must have TodoList set up as directed" do
           expect(TodoList.all.length).to be(4)
           user_list.each do | fname, lname, gender, byear |
+             binding.pry
             expect(TodoList.find_by(user: User.find_by(username: lname))).to_not be_nil
           end
-        end        
+        end
 
         it "must have TodoItems set up as directed" do
           expect(TodoItem.all.length).to be(20)
@@ -253,7 +255,7 @@ describe "Assignment" do
         todoItemGroup = TodoItem.all
         # test that results are sorted by updated_at and are ascending
         lastTime = Date.today
-        todoItemGroup.each do |t| 
+        todoItemGroup.each do |t|
           expect(t.due_date).to be >= lastTime
           lastTime = t.due_date
         end
@@ -270,7 +272,7 @@ describe "Assignment" do
         todoListGroup = TodoList.all
         # test that results are sorted by updated_at and are ascending
         lastTime = Date.today
-        todoListGroup.each do |t| 
+        todoListGroup.each do |t|
           expect(t.list_due_date).to be >= lastTime
           lastTime = t.list_due_date
         end
@@ -316,7 +318,7 @@ describe "Assignment" do
         TodoItem.destroy_all
         Profile.destroy_all
       end
- 
+
       context "rq12" do
         it "Cascading delete is represented in model dependencies" do
           expect(User.reflect_on_association(:profile).options[:dependent]).to eq :destroy
@@ -328,18 +330,18 @@ describe "Assignment" do
           profile = Profile.create(:first_name=>"Joe", :last_name=>"Smith", :birth_year=>2000, :gender=>"male", :user_id=>user.id)
           tdlist = TodoList.create(:list_name=>"my list", :list_due_date=>Date.today, :user_id=>user.id)
           tditem = TodoItem.create(:due_date=>Date.today, :title=>"My Item", :description=>"Item Details", :todo_list_id=>tdlist.id)
-          expect(User.find_by(id: user.id)).to_not be_nil           
-          expect(Profile.find_by(id: profile.id)).to_not be_nil           
-          expect(TodoList.find_by(id: tdlist.id)).to_not be_nil           
-          expect(TodoItem.find_by(id: tditem.id)).to_not be_nil     
+          expect(User.find_by(id: user.id)).to_not be_nil
+          expect(Profile.find_by(id: profile.id)).to_not be_nil
+          expect(TodoList.find_by(id: tdlist.id)).to_not be_nil
+          expect(TodoItem.find_by(id: tditem.id)).to_not be_nil
           # remove user with method and test that all related objects are nil
           lastId = user.id
           user.destroy
           # test that user and all other objects link to that user no longer exist
-          expect(User.find_by(id: lastId)).to be_nil           
-          expect(Profile.find_by(id: profile.id)).to be_nil           
-          expect(TodoList.find_by(id: tdlist.id)).to be_nil           
-          expect(TodoItem.find_by(id: tditem.id)).to be_nil  
+          expect(User.find_by(id: lastId)).to be_nil
+          expect(Profile.find_by(id: profile.id)).to be_nil
+          expect(TodoList.find_by(id: tdlist.id)).to be_nil
+          expect(TodoItem.find_by(id: tditem.id)).to be_nil
         end
       end
 
@@ -355,12 +357,12 @@ describe "Assignment" do
           completeCount = 0
           (0..10).each do |i|
             cval = [true, false].sample
-            if cval 
+            if cval
               completeCount = completeCount + 1
             end
             todoItem = TodoItem.create(:completed=>cval, :due_date=>Date.today, :title=>"My List 1 Item #{i}", :description=>"Item Details #{i}", :todo_list_id=>tdlist1.id)
             cval = [true, false].sample
-            if cval 
+            if cval
               completeCount = completeCount + 1
             end
             todoItem = TodoItem.create(:completed=>cval, :due_date=>Date.today, :title=>"My List 2 Item #{i}", :description=>"Item Details #{i}", :todo_list_id=>tdlist2.id)
@@ -390,7 +392,7 @@ describe "Assignment" do
           expect(profileGroup.length).to be(testCount)
           # test that results are sorted by birthyear and are ascending
           year = startYear
-          profileGroup.each do |t| 
+          profileGroup.each do |t|
             expect(t.birth_year).to be >= year
             year = t.birth_year
           end
