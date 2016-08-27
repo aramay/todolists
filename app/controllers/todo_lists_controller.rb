@@ -19,6 +19,7 @@ class TodoListsController < ApplicationController
 
   # GET /todo_lists/1/edit
   def edit
+     p params
   end
 
   # POST /todo_lists
