@@ -10,24 +10,24 @@ describe "Module #4: Navigation Tests", :type => :routing do
 
     around :each do |example|
         if $continue
-            $continue = false 
-            example.run 
+            $continue = false
+            example.run
             $continue = true unless example.exception
         else
             example.skip
         end
     end
 
-    context "rq04" do 
-        scenario "TodoList scaffolding was generated and it was set as root path" do 
-            visit (root_path) 
+    context "rq04" do
+        scenario "TodoList scaffolding was generated and it was set as root path" do
+            visit (root_path)
             expect(page.status_code).to eq(200)
             rootPage = page
             visit (todo_lists_path)
             expect(page.status_code).to eq(200)
             expect(page).to be(rootPage)
         end
-        scenario "TodoItems is not directly accessible as it is nested in TodoList" do        
+        scenario "TodoItems is not directly accessible as it is nested in TodoList" do
             visit ("/todo_items")
             expect(page.status_code).to eq(404)
         end
@@ -35,11 +35,11 @@ describe "Module #4: Navigation Tests", :type => :routing do
 
     context "rq05" do
 
-        before :all do    
+        before :all do
             TodoItem.destroy_all
             TodoList.destroy_all
             User.destroy_all
-            load "#{Rails.root}/db/seeds.rb"  
+            load "#{Rails.root}/db/seeds.rb"
         end
 
         context "rq05b" do
@@ -57,9 +57,9 @@ describe "Module #4: Navigation Tests", :type => :routing do
             end
         end
 
-        context "rq05d" do  
+        context "rq05d" do
 
-            scenario "TodoItem endpoint is accessible (show and destroy) through TodoList" do 
+            scenario "TodoItem endpoint is accessible (show and destroy) through TodoList" do
                 tl_id = TodoList.all.sample.id
                 list_items = TodoList.find(tl_id).todo_items
                 # Confirm links in list page are nested and that the
@@ -73,25 +73,25 @@ describe "Module #4: Navigation Tests", :type => :routing do
 
         end
 
-        context "rq05e" do 
+        context "rq05e" do
 
-            scenario "TodoList page has new TodoItem link with specified URI and method" do 
+            scenario "TodoList page has new TodoItem link with specified URI and method" do
                 tl_id = TodoList.all.sample.id
                 expect(:get => new_todo_list_todo_item_path(tl_id)).to route_to(:controller => "todo_items", :action => "new", :todo_list_id => "#{tl_id}")
                 list_items = TodoList.find(tl_id).todo_items
                 visit(todo_list_path(tl_id))
                 expect(page).to have_link('New Todo Item', :href => "#{new_todo_list_todo_item_path(tl_id)}")
             end
-        end 
+        end
     end
 
-    context "rq07" do        
-    
-        before :all do    
+    context "rq07" do
+
+        before :all do
             TodoItem.destroy_all
             TodoList.destroy_all
             User.destroy_all
-            load "#{Rails.root}/db/seeds.rb"  
+            load "#{Rails.root}/db/seeds.rb"
         end
 
         subject(:user) {
@@ -137,7 +137,7 @@ describe "Module #4: Navigation Tests", :type => :routing do
                 # replace with navigation here
                 visit(todo_list_path(tl_id))
                 expect(page).to have_link('Destroy', :href => "#{todo_list_todo_item_path(tl_id, li_id)}")
-                click_link('Destroy', :href => "#{todo_list_todo_item_path(tl_id, li_id)}");               
+                click_link('Destroy', :href => "#{todo_list_todo_item_path(tl_id, li_id)}");
                 expect(TodoItem.find_by(:id => li_id)).to be_nil
             end
         end
@@ -191,7 +191,7 @@ describe "Module #4: Navigation Tests", :type => :routing do
                 click_link('Back', :href => "#{todo_list_path(tl_id)}");
                 expect(page).to have_content(testList.list_name)
                 expect(page).to have_content(testList.list_due_date)
-            end            
+            end
         end
 
         context "rq07d" do
@@ -208,7 +208,7 @@ describe "Module #4: Navigation Tests", :type => :routing do
                 expect(page).to have_content("New Todo Item")
             end
 
-            scenario "New item form create adds new item and navigates to list item view" do 
+            scenario "New item form create adds new item and navigates to list item view" do
                 # confirm that route is correct
                 expect(:post => todo_list_todo_items_path(tl_id)).to route_to(:controller => "todo_items", :action => "create", :todo_list_id => "#{tl_id}")
                 visit(new_todo_list_todo_item_path(tl_id))
@@ -251,5 +251,5 @@ describe "Module #4: Navigation Tests", :type => :routing do
             end
         end
 
-    end   
+    end
  end
